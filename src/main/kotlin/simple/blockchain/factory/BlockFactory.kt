@@ -24,6 +24,7 @@ class BlockFactory(
             }
             hash = HashProvider.calculateHash(concatString)
         }
+        nonceProvider.clear()
 
         return Block(
             index = index,
