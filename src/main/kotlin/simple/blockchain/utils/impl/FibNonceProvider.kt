@@ -11,4 +11,8 @@ class FibNonceProvider: NonceProvider {
         previousValue = value
         return currentValue
     }
+
+    override fun clear() {
+        previousValue = 0
+    }
 }

@@ -1,5 +1,9 @@
 package simple.blockchain.models
 
 class Node {
-    private val chain: MutableList<Block> = mutableListOf()
+    @Volatile
+    var chain: MutableList<Block> = mutableListOf()
+
+    @Synchronized
+    fun addBlock(block: Block) = chain.add(block)
 }
