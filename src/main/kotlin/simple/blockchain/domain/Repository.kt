@@ -5,7 +5,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import simple.blockchain.currentNodePort
+import simple.blockchain.currentUrl
 import simple.blockchain.models.Block
 
 class Repository(
@@ -15,7 +15,7 @@ class Repository(
     suspend fun sendBlock(block: Block, url: String): Boolean {
         val response = client.post(url) {
             contentType(ContentType.Application.Json)
-            header("PORT", currentNodePort)
+            header("URL", currentUrl)
             setBody(block)
         }
         return response.bodyAsText() == "1"

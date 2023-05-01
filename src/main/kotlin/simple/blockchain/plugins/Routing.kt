@@ -29,10 +29,10 @@ fun Route.validate(node: Node) {
 fun Route.sendBlock(handler: Handler) {
     post(SEND_URL) {
         val block = call.receive(Block::class)
-        val senderNodePort = call.request.headers["PORT"]
+        val senderNodeUrl = call.request.headers["URL"]
 
-        if (senderNodePort != null) {
-            handler.handleBlock(block, senderNodePort)
+        if (senderNodeUrl != null) {
+            handler.handleBlock(block, senderNodeUrl)
         }
 
         call.respond(1)

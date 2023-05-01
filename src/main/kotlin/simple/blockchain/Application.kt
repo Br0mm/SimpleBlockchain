@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.slf4j.LoggerFactory
 import simple.blockchain.domain.Handler
 import simple.blockchain.domain.Repository
 import simple.blockchain.factory.BlockFactory
@@ -23,11 +24,11 @@ import simple.blockchain.utils.impl.IncrementNonceProvider
 import simple.blockchain.utils.impl.RandomNonceProvider
 
 val node = Node()
-var nodePort1 = ""
-var nodePort2 = ""
-val host = "http://127.0.0.1:"
-var currentNodePort = ""
+var url1 = ""
+var url2 = ""
+var currentUrl = ""
 var isMain = false
+val log = LoggerFactory.getLogger("Logger")
 
 lateinit var blockFactory: BlockFactory
 
@@ -42,26 +43,27 @@ private val handler = Handler(node, repository)
 private var block = Block(1, "2", "3", "4", 5)
 
 fun main(args: Array<String>) {
-    currentNodePort = args[0]
-    nodePort1 = args[1]
-    nodePort2 = args[2]
-    isMain = args[3] == "1"
+    val currentPort = args[0]
+    currentUrl = args[1]
+    url1 = args[2]
+    url2 = args[3]
+    isMain = args[4] == "1"
 
-    blockFactory = when (args[3]) {
+    blockFactory = when (args[4]) {
         "1" -> BlockFactory(IncrementNonceProvider())
         "2" -> BlockFactory(RandomNonceProvider())
         else -> BlockFactory(FibNonceProvider())
     }
 
     start()
-    embeddedServer(io.ktor.server.cio.CIO, port = currentNodePort.toInt(), host = "0.0.0.0", module = Application::module)
+    embeddedServer(io.ktor.server.cio.CIO, port = currentPort.toInt(), host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 
 fun start() {
     CoroutineScope(Dispatchers.IO).launch {
         if (!isMain) awaitGenesis()
-        else delay(1000)
+        else delay(500)
         generateBlock()
     }
 }
@@ -75,7 +77,7 @@ private suspend fun awaitGenesis() {
 private suspend fun generateBlock() {
     while (true) {
         block = blockFactory.generateBlock(block, block.index + 1)
-        handler.handleBlock(block, currentNodePort)
+        handler.handleBlock(block, currentUrl)
     }
 }
 
