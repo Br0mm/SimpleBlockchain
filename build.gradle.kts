@@ -49,15 +49,6 @@ application {
     mainClass.set("simple.blockchain.ApplicationKt")
 }
 
-/*
-ktor {
-    fatJar {
-        archiveFileName.set("SimpleBlockchain-$version.jar")
-    }
-}
-
- */
-
 tasks.create("MyFatJar", Jar::class) {
     group = "build"
     description = "Creates a self-contained fat JAR of the application that can be run."
