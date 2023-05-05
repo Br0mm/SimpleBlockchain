@@ -4,8 +4,9 @@
             <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <root level="DEBUG">
+    <root level="debug">
         <appender-ref ref="STDOUT"/>
     </root>
     <logger name="Logger" level="DEBUG"/>
+    <logger name="ktor.application" level="ERROR"/>
 </configuration>

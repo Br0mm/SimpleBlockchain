@@ -21,7 +21,7 @@ import simple.blockchain.plugins.configureRouting
 import simple.blockchain.plugins.configureSerialization
 import simple.blockchain.utils.impl.FibNonceProvider
 import simple.blockchain.utils.impl.IncrementNonceProvider
-import simple.blockchain.utils.impl.RandomNonceProvider
+import simple.blockchain.utils.impl.DecrementProvider
 
 val node = Node()
 var url1 = ""
@@ -40,7 +40,7 @@ private val repository = Repository(
     }
 )
 private val handler = Handler(node, repository)
-private var block = Block(1, "2", "3", "4", 5)
+private var block = Block(0, "1", "2", "3", 4)
 
 fun main(args: Array<String>) {
     val currentPort = args[0]
@@ -51,7 +51,7 @@ fun main(args: Array<String>) {
 
     blockFactory = when (args[4]) {
         "1" -> BlockFactory(IncrementNonceProvider())
-        "2" -> BlockFactory(RandomNonceProvider())
+        "2" -> BlockFactory(DecrementProvider())
         else -> BlockFactory(FibNonceProvider())
     }
 
@@ -62,8 +62,12 @@ fun main(args: Array<String>) {
 
 fun start() {
     CoroutineScope(Dispatchers.IO).launch {
-        if (!isMain) awaitGenesis()
-        else delay(500)
+        if (!isMain) {
+            awaitGenesis()
+        } else {
+            delay(500)
+            generateFirstBlock()
+        }
         generateBlock()
     }
 }
@@ -74,10 +78,18 @@ private suspend fun awaitGenesis() {
     }
 }
 
+private suspend fun generateFirstBlock() {
+    val generatedBlock = blockFactory.generateBlock(block, block.index + 1)
+    handler.handledMinedBlock(generatedBlock)
+}
+
 private suspend fun generateBlock() {
     while (true) {
-        block = blockFactory.generateBlock(block, block.index + 1)
-        handler.handleBlock(block, currentUrl)
+        val lastBlock = node.chain.lastOrNull()
+        if (lastBlock != null) {
+            val generatedBlock = blockFactory.generateBlock(lastBlock, node.chain.size + 1)
+            handler.handledMinedBlock(generatedBlock)
+        }
     }
 }
 

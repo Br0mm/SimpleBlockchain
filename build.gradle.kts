@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "simple.blockchain"
-version = "1.0"
+version = "1.1"
 
 dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
