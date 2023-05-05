@@ -32,7 +32,7 @@ fun Route.sendBlock(handler: Handler) {
         val senderNodeUrl = call.request.headers["URL"]
 
         if (senderNodeUrl != null) {
-            handler.handleBlock(block, senderNodeUrl)
+            handler.handleRecievedBlock(block, senderNodeUrl)
         }
 
         call.respond(1)

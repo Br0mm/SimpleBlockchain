@@ -28,4 +28,4 @@
 ```docker-compose up```
 ## Результат
 
-![Example](screenshot/result.jpg)
+![Example](screenshot/result.png)
