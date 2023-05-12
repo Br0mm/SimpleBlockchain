@@ -41,23 +41,23 @@ class Handler(
     private suspend fun sendBlock(block: Block) {
         log.debug("Block send")
         runCatching {
-            repository.sendBlock(block, "$url1$SEND_URL")
-            repository.sendBlock(block, "$url2$SEND_URL")
+            repository.sendBlock(block, "$url1:8080$SEND_URL")
+            repository.sendBlock(block, "$url2:8080$SEND_URL")
         }
     }
 
     private suspend fun handleResolveNode(lastBlock: Block?, block: Block, senderNodeUrl: String) {
         val url = if (senderNodeUrl == url1) url2 else url1
-        val thirdNodeBlock = repository.getResolvingNode("$url$RESOLVE_NODE_URL")
+        val thirdNodeBlock = repository.getResolvingNode("$url:8080$RESOLVE_NODE_URL")
 
         when {
             lastBlock != null && lastBlock.index > block.index && lastBlock.index > thirdNodeBlock.index -> Unit
 
-            block.index > thirdNodeBlock.index -> node.chain = repository.validateChain("$senderNodeUrl$VALIDATE_URL")
+            block.index > thirdNodeBlock.index -> node.chain = repository.validateChain("$senderNodeUrl:8080$VALIDATE_URL")
 
-            thirdNodeBlock.index > block.index -> node.chain = repository.validateChain("$url$VALIDATE_URL")
+            thirdNodeBlock.index > block.index -> node.chain = repository.validateChain("$url:8080$VALIDATE_URL")
 
-            thirdNodeBlock.currentHash == block.currentHash -> node.chain = repository.validateChain("$url$VALIDATE_URL")
+            thirdNodeBlock.currentHash == block.currentHash -> node.chain = repository.validateChain("$url:8080$VALIDATE_URL")
         }
     }
 }

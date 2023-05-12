@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "simple.blockchain"
-version = "1.1"
+version = "1.2"
 
 dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
@@ -49,16 +49,8 @@ application {
     mainClass.set("simple.blockchain.ApplicationKt")
 }
 
-tasks.create("MyFatJar", Jar::class) {
-    group = "build"
-    description = "Creates a self-contained fat JAR of the application that can be run."
-    manifest.attributes["Main-Class"] = "simple.blockchain.ApplicationKt"
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    val dependencies = configurations
-        .runtimeClasspath
-        .get()
-        .map(::zipTree)
-    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/INDEX.LIST")
-    from(dependencies)
-    with(tasks.jar.get())
+ktor {
+    fatJar {
+        archiveFileName.set("SimpleBlockchain.jar")
+    }
 }

@@ -43,20 +43,19 @@ private val handler = Handler(node, repository)
 private var block = Block(0, "1", "2", "3", 4)
 
 fun main(args: Array<String>) {
-    val currentPort = args[0]
-    currentUrl = args[1]
-    url1 = args[2]
-    url2 = args[3]
-    isMain = args[4] == "1"
+    currentUrl = args[0]
+    url1 = args[1]
+    url2 = args[2]
+    isMain = args[3] == "1"
 
-    blockFactory = when (args[4]) {
+    blockFactory = when (args[3]) {
         "1" -> BlockFactory(IncrementNonceProvider())
         "2" -> BlockFactory(DecrementProvider())
         else -> BlockFactory(FibNonceProvider())
     }
 
     start()
-    embeddedServer(io.ktor.server.cio.CIO, port = currentPort.toInt(), host = "0.0.0.0", module = Application::module)
+    embeddedServer(io.ktor.server.cio.CIO, port = 8080, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 
